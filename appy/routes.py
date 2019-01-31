@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect
-from appy import app
+from appy import app, db, bcrypt
 from appy.forms import RegistrationForm, LoginForm
 from appy.models import User, Post
 
@@ -34,8 +34,12 @@ def about():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=username.form.data, email=email.form.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account has been created, now able to login!', 'success')
+        return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 
