@@ -10,7 +10,7 @@
 
 ## How to run 
 
-Describe here how someone can  rn your program
+Describe here how someone can  run your program
 
 ## Author
 

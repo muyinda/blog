@@ -145,3 +145,10 @@ def delete_post(post_id):
 
 
 
+@app.route("/user/<string:username>")
+def user_posts(username):
+     user = User.query.filter_by(username=username).first_or_404()
+     posts = Post.query.filter_by(author=user)\
+         .order_by(Post.date_posted.desc())\
+        .all()
+     return render_template('user_posts.html', posts=posts, user=user)    
