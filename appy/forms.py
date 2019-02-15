@@ -16,16 +16,17 @@ class RegistrationForm(FlaskForm):
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
+#checks if username is aleady occupied(taken) before current user in the registration form
 def validate_username(self, username):
     user= User.query.filter_by(username=username.data).first()
     if user:
-        raise ValidationError('username taken, choose another!')
+        raise ValidationError('username occupied, choose another!')
 
-
+#checks if email is already occupied(taken) before the current user in registration form
 def validate_email(self, email):
     user= User.query.filter_by(email=email.data).first()
     if user:
-        raise ValidationError('email taken, choose another!')
+        raise ValidationError('email occupied, choose another!')
 
 
 
@@ -45,20 +46,21 @@ class UpdateAccountForm(FlaskForm):
 
     submit = SubmitField('Update')
 
+#checks if the username is has already been used(taken) before current user in login form
     def validate_username(self, username):
             if username.data != current_user.username:
                     user= User.query.filter_by(username=username.data).first()
                     if user:
-                            raise ValidationError('username taken, choose another!')
+                            raise ValidationError('username occupied, choose another!')
 
-
+#this checks if email has already been used(taken) before the current user in login form
     def validate_email(self, email):
             if email.data != current_user.email:
-                    user= User.query.filter_by(email=email.data).first()
+                    user= User.query.filter_by(email = email.data).first()
                     if user:
-                            raise ValidationError('email taken, choose another!')
+                            raise ValidationError('email occupied, choose another!')
 
-
+#
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('content', validators=[DataRequired()])

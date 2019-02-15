@@ -3,7 +3,7 @@
 {% block content %}
     <div class="content-section">
         <form method="POST" action="">
-            {{ form.hidden_tag() }}
+            {{ form.hidden_tag() }}  <!--this is for security of a user on his/her account-->
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Login</legend>
                 <div class="form-group">
@@ -35,7 +35,7 @@
                 <div class="form-check">
                     {{ form.remember(class="form-check-input") }}
                     {{ form.remember.label(class="form-check-label") }}
-                </div>
+                </div>   
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
@@ -48,6 +48,6 @@
     <div class="border-top pt-3">
         <small class="text-muted">
             Need An Account? <a class="ml-2" href="{{ url_for('register') }}">Sign Up Now</a>
-        </small>
+        </small>  <!--this is a link which directs to the register just incase you where on the login but have no account-->
     </div>
 {% endblock content %}

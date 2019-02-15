@@ -8,19 +8,19 @@ from appy.models import User, Post
 from flask_login import login_user, current_user, logout_user,login_required
 
 
-
+#home route, but it can run on both routes 
 @app.route("/")
 @app.route("/home")
 def home():
     posts = Post.query.order_by(Post.date_posted.desc()).all()
     return render_template('home.html', posts=posts)
 
-
+#the about route and function it calls to run
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
 
-
+#regitration route with an authentication of a user to return valid credentials while registrating
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user. is_authenticated:
@@ -35,7 +35,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-
+#login path to return true(valid details for one loging in) with the function it calls
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user. is_authenticated:
@@ -52,12 +52,13 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+#logout route to enable one after they are through on the account, they can logout and return to home page
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
+#this function saves the profile picture for the account, but also outputs all of them with a fixed size
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
@@ -71,6 +72,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
+#account route which after user logs in, can update it (email,username and pp)
 @app.route("/account" , methods=['GET', 'POST'])
 @login_required
 def account():
@@ -90,7 +92,7 @@ def account():
     image_file = (url_for('static', filename='images/' + current_user.image_file))
     return render_template('account.html', title='Account', image_file=image_file, form=form)   
 
-
+# post route with fxn it calls...helps to post a new post
 @app.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
@@ -110,8 +112,8 @@ def post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
 
-
-app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+#post route that updates the posts created by current user
+@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -127,11 +129,10 @@ def update_post(post_id):
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
-    
     return render_template('create_post.html', title='Update Post', 
                             form=form, legend='Update Post')
 
-
+#this with the function it calls, one is able to delete a post
 @app.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(post_id):
@@ -144,11 +145,12 @@ def delete_post(post_id):
     return redirect(url_for('home'))
 
 
-
+# this route just arranges the posts according to the time and date it was created
 @app.route("/user/<string:username>")
 def user_posts(username):
-     user = User.query.filter_by(username=username).first_or_404()
-     posts = Post.query.filter_by(author=user)\
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username = username).first_or_404()
+    posts = Post.query.filter_by(author=user)\
          .order_by(Post.date_posted.desc())\
         .all()
-     return render_template('user_posts.html', posts=posts, user=user)    
+    return render_template('user_posts.html', posts=posts, user=user)    

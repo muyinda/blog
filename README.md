@@ -8,6 +8,8 @@
 
 - A user can comment on other blogs
 
+-A user can like and dislike a blog
+
 ## How to run 
 
 Describe here how someone can  run your program
